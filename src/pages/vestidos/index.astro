@@ -1,0 +1,61 @@
+---
+// src/pages/vestidos/index.astro
+import { getEntry } from 'astro:content'; // Usaremos getEntry para orden específico
+import type { CollectionEntry } from "astro:content";
+
+// Layout
+import BaseLayout from "@layouts/BaseLayout.astro"; // Ajusta la ruta
+
+// Componentes
+import Contact from "@components/Contact/Contact.astro"; // Asumiendo que renombraste o esta es la ruta correcta
+import CategoriaGrid from "@components/Categorias/CategoriaGrid.astro"; // Importa el nuevo grid de categorías
+import TestimonialQuote from "@components/Testimonials/TestimonialQuote.astro"; // Ajusta la ruta
+
+// Define el orden deseado para las categorías principales a mostrar en esta página
+const ordenCategorias = ["novia", "quinceanera", "graduacion"]; // Coincide con IDs/carpetas
+
+// Obtén las entradas de 'categoriasVestidos' para los tipos específicos en el orden deseado
+const categoriasPrincipales = (await Promise.all(
+  ordenCategorias.map(async (tipo) => {
+    try {
+      // Intenta obtener la entrada por el nombre de la carpeta/ID
+      return await getEntry('categoriasVestidos', tipo);
+    } catch (e) {
+      console.error(`Error al obtener la categoría '${tipo}' en vestidos/index.astro: ${e}`);
+      return null; // Devuelve null si no se encuentra
+    }
+  })
+  // Filtra cualquier categoría que no se haya encontrado
+)).filter(c => c !== null) as CollectionEntry<'categoriasVestidos'>[];
+
+// Meta Título y Descripción para esta página
+const pageTitle = "Vestidos para Ocasiones Especiales en Pereira - Glam 5.0";
+const pageDesc = "Descubre nuestras colecciones de vestidos de novia, quinceañera y graduación en Pereira. Diseños exclusivos y alquiler disponible en Glam 5.0.";
+
+---
+<BaseLayout title={pageTitle} description={pageDesc}>
+    <div class="site-container pt-24 md:pt-36">
+        <div class="mx-auto max-w-6xl text-center">
+             {/* Título adaptado para la página de categorías */}
+            <h1 class="h2 text-pretty uppercase">
+                Encuentra el Vestido Perfecto para Cada Ocasión Especial en Pereira
+            </h1>
+            <p class="description mt-4">
+                Explora nuestras categorías principales: Novia, 15 Años y Graduación. Cada una con el sello de elegancia y calidad de Glam 5.0.
+            </p>
+        </div>
+
+        {/* Usa el nuevo CategoriaGrid y pasa los datos */}
+        {categoriasPrincipales.length > 0 ? (
+            <CategoriaGrid categorias={categoriasPrincipales} />
+        ) : (
+            <p class="text-center pt-12 text-red-600">No se pudieron cargar las categorías principales.</p>
+        )}
+
+    </div>
+
+    {/* Puedes mantener o quitar las otras secciones según necesites */}
+    <TestimonialQuote />
+
+    <Contact class="mt-12" />
+</BaseLayout>

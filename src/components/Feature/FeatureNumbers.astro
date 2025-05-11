@@ -1,0 +1,100 @@
+---
+/**
+ * * Sección de métricas clave para SEO - Glam 5.0
+ * Muestra datos verificables que generan confianza
+ */
+
+ import FeatureCardNumbers from "@components/FeatureCard/FeatureCardNumbers.astro";
+
+interface FeatureCardData {
+  largeText: string;
+  description: string;
+  schemaType?: string;
+}
+
+// Datos reales, verificables y relevantes para SEO local
+const featureData: FeatureCardData[] = [
+  {
+    largeText: "7+",
+    description: `Años de experiencia confeccionando vestidos en Pereira`,
+    schemaType: "yearsInOperation"
+  },
+  {
+    largeText: "365",
+    description: `Vestidos alquilados anualmente para eventos especiales`,
+    schemaType: "yearlyRentalCount"
+  },
+  {
+    largeText: "100",
+    description: `Diseños exclusivos de vestidos creados a medida`,
+    schemaType: "customDesignsCount"
+  },
+  {
+    largeText: "N°1",
+    description: `Boutique de vestidos más recomendada en Risaralda`,
+    schemaType: "award"
+  },
+];
+---
+
+<section 
+  id="feature-numbers" 
+  class="bg-base-100 scroll-mt-10 py-8 md:py-12"
+  itemscope
+  itemtype="https://schema.org/LocalBusiness"
+>
+  <div class="mx-auto max-w-6xl px-4">
+    <div class="text-prety mr-auto text-center">
+      <h2 class="h2">
+        <span itemprop="name">Glam 5.0</span>: Experiencia, diseño y elegancia en cada vestido
+      </h2>
+    </div>
+
+    <div 
+      class="mt-6 grid gap-10 gap-y-16 sm:grid-cols-2 md:mt-12 lg:grid-cols-4"
+      itemprop="makesOffer" 
+      itemscope 
+      itemtype="https://schema.org/OfferCatalog"
+    >
+      {featureData.map((feature, idx) => (
+        <FeatureCardNumbers 
+          largeText={feature.largeText} 
+          description={feature.description}
+          schemaType={feature.schemaType}
+        />
+      ))}
+    </div>
+  </div>
+
+  <!-- Microdatos para rich snippets -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Glam 5.0",
+      "description": "Boutique especializada en diseño, confección y alquiler de vestidos en Pereira",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Pereira",
+        "addressRegion": "Risaralda",
+        "addressCountry": "CO"
+      },
+      "makesOffer": {
+        "@type": "OfferCatalog",
+        "name": "Servicios de vestidos",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "name": "Confección de vestidos personalizados",
+            "description": "7+ años de experiencia creando diseños exclusivos"
+          },
+          {
+            "@type": "Offer",
+            "name": "Alquiler de vestidos para eventos",
+            "description": "Más de 365 alquileres anuales satisfechos"
+          }
+        ]
+      }
+    }
+  </script>
+</section>

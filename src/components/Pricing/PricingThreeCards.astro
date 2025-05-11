@@ -1,0 +1,118 @@
+---
+/**
+ * * Pricing cards with three cards
+ */
+
+ import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+
+// components
+import Button from "@components/Button/Button.astro";
+
+interface servicioItem {
+  name: string; // nombre del servicio
+  featured?: boolean; // si es true, será destacado visualmente
+  priceRent: number; // precio de alquiler
+  priceBuy: number; // precio de compra
+  features: string[]; // lista de características
+  image: ImageMetadata; // imagen importada
+}
+
+import imageNovia from "@assets/images/vestido-novia-premium.jpg";
+import imageQuince from "@assets/images/vestido-quinceanera-elegante.jpg";
+import imageGraduacion from "@assets/images/vestido-graduacion-gala.jpg";
+
+// Servicios principales de Glam 5.0
+const pricingData: servicioItem[] = [
+  {
+    name: "Vestido de Novia",
+    featured: true,
+    priceRent: 800000,
+    priceBuy: 2500000,
+    features: [
+      "Diseños exclusivos y personalizables",
+      "Prueba y ajustes incluidos",
+      "Asesoría de imagen personalizada",
+      "Garantía de exclusividad en fecha",
+    ],
+    image: imageNovia,
+  },
+  {
+    name: "Vestido de 15 Años",
+    featured: false,
+    priceRent: 650000,
+    priceBuy: 1800000,
+    features: [
+      "Diseños que destacan en cualquier fiesta",
+      "Prueba y ajustes incluidos",
+      "Tiara y accesorios disponibles",
+      "Descuento en vestidos para damas",
+    ],
+    image: imageQuince,
+  },
+  {
+    name: "Vestido de Graduación",
+    featured: false,
+    priceRent: 450000,
+    priceBuy: 1200000,
+    features: [
+      "Elegantes diseños modernos",
+      "Prueba y ajustes incluidos",
+      "Disponible en varios colores",
+      "Complementos a juego",
+    ],
+    image: imageGraduacion,
+  },
+];
+---
+
+<section id="pricing" class="mx-auto max-w-6xl scroll-mt-10 px-4 py-8 md:py-12">
+	<div class="mx-auto max-w-6xl text-center">
+		<h2 class="h2 text-pretty uppercase">Nuestros Vestidos</h2>
+	</div>
+
+	<!-- works for 3 pricing plans, adjust grid cols here to support more or less -->
+	<div
+		class="mx-auto grid w-full max-w-md gap-12 pt-8 sm:max-w-none sm:grid-cols-2 md:pt-12 lg:grid-cols-3"
+	>
+		{
+			pricingData.map((plan) => (
+				<div
+					class="flex w-full flex-col"
+					class:list={[
+						{
+							"bg-primary-200": plan.featured === true,
+						},
+					]}
+				>
+					<div>
+						<div class="aspect-[3/4] h-auto w-full overflow-hidden">
+							<Image
+								src={plan.image}
+								alt={plan.name}
+								width={450}
+								densities={[1.5, 2]}
+								class="h-full w-full object-cover"
+							/>
+						</div>
+					</div>
+					<div class="border-primary-200 flex h-full flex-col justify-between border-2 border-t-0 pt-10 pb-10">
+						<div>
+							<h3 class="h2 text-center">{plan.name}</h3>
+
+							<ul class="mt-4 flex flex-col gap-3 px-8">
+								{plan.features.map((feature) => (
+									<li class="leading-snug lg:text-lg lg:leading-snug">{feature}</li>
+								))}
+							</ul>
+						</div>
+					</div>
+				</div>
+			))
+		}
+	</div>
+
+	<div class="mt-12 flex justify-center">
+		<Button href="/#contact" variant="outline" class="px-8">Solicitar Cita</Button>
+	</div>
+</section>

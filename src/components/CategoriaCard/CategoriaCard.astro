@@ -1,0 +1,75 @@
+---
+// src/components/CategoriaCard.astro
+/**
+ * * Tarjeta para mostrar la introducción de una categoría de vestidos
+ */
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+
+// components
+import Button from "@components/Button/Button.astro"; // Asegúrate que la ruta es correcta
+
+interface Props {
+    // Ahora espera una entrada de la colección 'categoriasVestidos'
+    categoria: CollectionEntry<"categoriasVestidos">;
+    direction: "horizontal" | "vertical";
+    noTransitions?: boolean; // Puedes decidir si mantener las transiciones aquí
+}
+
+// Renombramos la prop a 'categoria'
+const { categoria, direction, noTransitions = false } = Astro.props as Props;
+// Usamos los campos del schema 'categoriasVestidos': title, description, heroImage
+const { title, description, heroImage } = categoria.data;
+
+const rawSlug = categoria.id;
+const categoriaSlug = rawSlug
+  .replace(/\/index\.md$/, "")
+  .replace(/\/index$/, "")
+  .replace(/\.md$/, "");
+const categoriaUrl = `/vestidos/${categoriaSlug}`;
+---
+
+<div
+    class:list={[
+        "grid gap-4",
+        {
+            "md:grid-cols-2": direction === "horizontal",
+        },
+    ]}
+>
+    <!-- Enlace apunta a la página de categoría, ej: /vestidos/novia -->
+    <a href={categoriaUrl} class="aspect-square overflow-hidden">
+        {noTransitions ? (
+            <Image
+                src={heroImage}
+                alt={title}
+                width={450}
+                densities={[1.5, 2, 3]}
+                class="h-auto min-h-full w-full min-w-full object-cover"
+            />
+        ) : (
+            <Image
+                src={heroImage}
+                alt={title}
+                width={450}
+                densities={[1.5, 2, 3]}
+                class="h-auto min-h-full w-full min-w-full object-cover"
+                transition:name={`categoria-image-${categoriaSlug}`}
+            />
+        )}
+    </a>
+    <div class="flex flex-col justify-between gap-2">
+        <div>
+            <!-- Muestra el title de la categoría -->
+            <h3 class="h3 text-primary-500 tracking-widest">{title}</h3>
+            <!-- Muestra la description de la categoría -->
+            <p class="mt-4 lg:text-lg">{description}</p>
+        </div>
+        <div class="flex">
+            <!-- Botón apunta a la página de categoría -->
+            <Button variant="ghost" arrow="right" href={categoriaUrl} class="pl-0">
+                Ver Vestidos
+            </Button>
+        </div>
+    </div>
+</div>

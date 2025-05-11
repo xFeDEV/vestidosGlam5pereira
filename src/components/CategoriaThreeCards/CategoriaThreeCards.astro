@@ -1,0 +1,72 @@
+---
+// src/components/CategoriaThreeCards.astro
+/**
+ * * Este componente muestra tres tarjetas de categoría de vestidos
+ * Una grande a la izquierda y dos más pequeñas a la derecha.
+ */
+
+ import { getEntry } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+// Importa la tarjeta de categoría que creamos
+import CategoriaCard from "@components/CategoriaCard/CategoriaCard.astro"; // Ajusta la ruta si es necesario
+import Button from "@components/Button/Button.astro"; // Ajusta la ruta si es necesario
+
+// Define el orden deseado para las categorías principales
+const ordenCategorias = ["novia", "quinceanera", "graduacion"]; // Asegúrate que estos IDs/slugs coinciden con tus carpetas en src/data/vestidos/
+
+// Obtén las entradas de 'categoriasVestidos' para los tipos específicos en el orden deseado
+const categoriasPrincipales = (await Promise.all(
+  ordenCategorias.map(async (tipo) => {
+    try {
+      // Intenta obtener la entrada por el nombre de la carpeta (que es el ID/slug para index.md)
+      return await getEntry('categoriasVestidos', tipo);
+    } catch (e) {
+      console.error(`Error al obtener la categoría '${tipo}' en CategoriaThreeCards.astro: ${e}`);
+      return null; // Devuelve null si no se encuentra para evitar errores
+    }
+  })
+  // Filtra cualquier categoría que no se haya encontrado (resultado null)
+)).filter(c => c !== null) as CollectionEntry<'categoriasVestidos'>[];
+
+// Asegúrate de tener al menos 3 categorías antes de intentar acceder a ellas
+const categoriaUno = categoriasPrincipales.length > 0 ? categoriasPrincipales[0] : null;
+const categoriaDos = categoriasPrincipales.length > 1 ? categoriasPrincipales[1] : null;
+const categoriaTres = categoriasPrincipales.length > 2 ? categoriasPrincipales[2] : null;
+
+---
+
+<section id="categorias-vestidos" class="site-container mt-12 scroll-mt-10 py-8 md:py-12">
+    <div class="mx-auto max-w-6xl text-center">
+        {/* Título actualizado y relevante para Glam 5.0 */}
+        <h2 class="h2 text-pretty uppercase">
+            Tu vestido soñado te espera en Pereira: Novias radiantes, Quinceañeras espectaculares y Graduadas elegantes con Glam 5.0
+        </h2>
+    </div>
+
+    {/* Verifica si tenemos las 3 categorías antes de renderizar el grid */}
+    {categoriaUno && categoriaDos && categoriaTres ? (
+        <div class="grid gap-10 pt-8 md:grid-cols-2 md:pt-12">
+            {/* Tarjeta Grande Izquierda (Primera Categoría - ej: Novia) */}
+            <div class="md:bg-base-100 md:rounded-md md:p-10 md:pb-6">
+                <CategoriaCard categoria={categoriaUno} direction="vertical" />
+            </div>
+
+            {/* Tarjetas Pequeñas Derecha */}
+            <div class="flex h-full flex-col justify-between gap-y-6">
+                {/* Segunda Categoría (ej: Quinceanera) */}
+                <CategoriaCard categoria={categoriaDos} direction="horizontal" />
+                <hr class="border-base-100 hidden border md:block" />
+                {/* Tercera Categoría (ej: Graduacion) */}
+                <CategoriaCard categoria={categoriaTres} direction="horizontal" />
+            </div>
+        </div>
+    ) : (
+        <p class="text-center pt-8 text-red-600">Error: No se pudieron cargar las 3 categorías principales. Verifica los archivos index.md en src/data/vestidos/ y la colección 'categoriasVestidos'.</p>
+    )}
+
+    {/* Botón actualizado para enlazar a la página principal del catálogo */}
+    <div class="mt-12 flex justify-center">
+        <Button href="/vestidos/" variant="outline">Ver Catálogo Completo</Button>
+    </div>
+</section>

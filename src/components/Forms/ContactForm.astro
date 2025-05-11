@@ -1,0 +1,92 @@
+---
+// src/components/ContactWhatsApp.astro
+// (O puedes modificar directamente tu archivo de formulario existente)
+import Button from "@components/Button/Button.astro";
+
+// IMPORTANTE: Reemplaza esto con tu número de WhatsApp completo en formato internacional (sin +, espacios ni guiones)
+const WHATSAPP_NUMBER = "573104540168"; // Ejemplo para Colombia
+---
+
+<div id="contact-via-whatsapp" class="flex h-full flex-col justify-between gap-4">
+    {/* Mantenemos los campos para guiar al usuario */}
+    <div>
+        <label for="contact-name-wa" class="font-heading-1 text-lg uppercase">Tu Nombre</label>
+        <input type="text" class="form__input" id="contact-name-wa" placeholder="Ej: Carolina Mesa" required />
+    </div>
+    <div class="flex flex-col gap-1">
+        <label for="contact-email-wa" class="font-heading-1 text-lg uppercase">Tu E-mail (Opcional)</label>
+        <input
+            type="email"
+            class="form__input"
+            id="contact-email-wa"
+            inputmode="email"
+            placeholder="Ej: caro.mesa@email.com (opcional)"
+        />
+        {/* Nota: Email es opcional, WhatsApp ya identifica al usuario */}
+    </div>
+    <div>
+        <label for="contact-date-wa" class="font-heading-1 text-lg uppercase">Fecha del Evento (Aprox.)</label>
+        <input type="date" class="form__input" id="contact-date-wa" required />
+    </div>
+    <div>
+        <label for="contact-message-wa" class="font-heading-1 text-lg uppercase">Tu Mensaje / Consulta</label>
+        <textarea
+            class="form__input"
+            id="contact-message-wa"
+            rows="4"  {/* Reduje un poco las filas */}
+            placeholder="Ej: Quisiera cotizar un vestido de novia estilo princesa..."
+            required></textarea>
+    </div>
+
+    {/* Botón que activará WhatsApp */}
+    <div class="flex">
+        <Button
+            variant="primary"
+            type="button" {/* Cambiado a 'button' para que no intente enviar un formulario */}
+            id="whatsapp-button"
+            class="w-full px-10 md:w-fit">
+            Contactar por WhatsApp
+        </Button>
+    </div>
+</div>
+
+<script define:vars={{ WHATSAPP_NUMBER }}>
+    // Espera a que el DOM esté completamente cargado
+    document.addEventListener('DOMContentLoaded', () => {
+        const button = document.getElementById('whatsapp-button');
+        const nameInput = document.getElementById('contact-name-wa');
+        const emailInput = document.getElementById('contact-email-wa');
+        const dateInput = document.getElementById('contact-date-wa');
+        const messageInput = document.getElementById('contact-message-wa');
+
+        // Verifica que todos los elementos existan antes de añadir el listener
+        if (button && nameInput && emailInput && dateInput && messageInput) {
+            button.addEventListener('click', () => {
+                // Validar campos requeridos (simple)
+                if (!nameInput.value.trim() || !dateInput.value || !messageInput.value.trim()) {
+                    alert('Por favor, completa tu nombre, fecha del evento y mensaje.');
+                    return; // Detiene la ejecución si falta algo
+                }
+
+                // Construye el mensaje pre-rellenado
+                let message = `Hola Glam 5.0, mi nombre es ${nameInput.value}. `;
+                if (emailInput.value) { // Añade email solo si se ingresó
+                    message += `Mi email es ${emailInput.value}. `;
+                }
+                message += `La fecha aproximada de mi evento es ${dateInput.value}. `;
+                message += `Consulta: ${messageInput.value}`;
+
+                // Codifica el mensaje para la URL de WhatsApp
+                const encodedMessage = encodeURIComponent(message);
+
+                // Crea la URL de WhatsApp Click-to-Chat
+                const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+                // Abre WhatsApp en una nueva pestaña
+                window.open(whatsappUrl, '_blank');
+            });
+        } else {
+            console.error("Error: No se encontraron todos los elementos del formulario de contacto WhatsApp.");
+        }
+    });
+</script>

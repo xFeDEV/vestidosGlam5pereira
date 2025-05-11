@@ -1,0 +1,247 @@
+---
+import { Image } from "astro:assets";
+import Button from "@components/Button/Button.astro";
+
+// Metadata SEO
+const pageTitle = "Vestidos de Alta Costura en Pereira | Glam 5.0";
+const pageDescription = "Diseños exclusivos para 15 años, novias y graduaciones. Confección personalizada y alquiler de vestidos en Pereira.";
+---
+
+<section id="hero" class="relative z-10 flex min-h-[100lvh] w-full bg-white">
+  <div class="site-container relative w-full gap-10 py-30 text-center md:py-30 md:text-left">
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Hero text (SEO Optimizado) -->
+      <div class="my-auto mr-auto max-w-[800px] flex-col">
+        <h1 class="font-heading-1 text-4xl font-semibold text-black text-pretty md:text-7xl md:leading-tight">
+          Los mejores <span class="text-glam-pink">vestidos</span> de Pereira
+        </h1>
+        <p class="mt-8 text-lg tracking-widest text-black text-pretty md:max-w-[550px] md:text-2xl">
+          Descubre colecciones exclusivas para tus momentos especiales. 15 años, bodas y graduaciones con estilo único en Risaralda.
+        </p>
+        <div class="mt-10 flex flex-wrap justify-center gap-4 md:justify-start">
+          <Button
+            variant="ghost"
+            arrow="right"
+            href="/contacto"
+            class="pl-0 text-xl text-black md:text-3xl"
+            aria-label="Cotizar vestido"
+          >
+            Cotizar Ahora
+          </Button>
+        </div>
+      </div>
+      
+      <!-- Carrusel (SEO Optimizado) -->
+      <div class="carousel-container relative my-auto w-full overflow-hidden rounded-lg shadow-lg" aria-label="Galería de vestidos Glam 5.0">
+        <div class="carousel-slides flex transition-transform duration-500 ease-in-out" role="list">
+          <!-- Slide 1 (Prioritaria) -->
+          <div class="carousel-slide min-w-full" role="listitem">
+            <img 
+              src="/images/vestido-novia-pereira.jpg" 
+              alt="Vestido de novia con encaje - Glam 5.0 Pereira" 
+              class="w-full h-auto object-contain"
+              loading="eager"
+              fetchpriority="high"
+              width="800"
+              height="1200"
+            />
+          </div>
+          <!-- Slide 2 -->
+          <div class="carousel-slide min-w-full" role="listitem">
+            <img 
+              src="/images/vestido-15-anos.jpg" 
+              alt="Vestido para quinceañera en tonos pastel - Pereira" 
+              class="w-full h-auto object-contain"
+              loading="lazy"
+              width="800"
+              height="1200"
+            />
+          </div>
+          <!-- Slide 3 -->
+          <div class="carousel-slide min-w-full" role="listitem">
+            <img 
+              src="/images/vestido-graduacion.jpg" 
+              alt="Vestido elegante para graduación - Glam 5.0" 
+              class="w-full h-auto object-contain"
+              loading="lazy"
+              width="800"
+              height="1200"
+            />
+          </div>
+        </div>
+
+        <!-- Controles accesibles -->
+        <button
+          class="carousel-prev absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full hover:bg-opacity-75 transition-all"
+          aria-label="Anterior vestido"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          class="carousel-next absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full hover:bg-opacity-75 transition-all"
+          aria-label="Siguiente vestido"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+
+        <!-- Indicadores semánticos -->
+        <div class="carousel-indicators absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2" role="tablist">
+          <button 
+            class="carousel-indicator w-3 h-3 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100 transition-all" 
+            aria-label="Mostrar vestido 1" 
+            role="tab"
+            aria-selected="true"
+          ></button>
+          <button 
+            class="carousel-indicator w-3 h-3 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100 transition-all" 
+            aria-label="Mostrar vestido 2" 
+            role="tab"
+            aria-selected="false"
+          ></button>
+          <button 
+            class="carousel-indicator w-3 h-3 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100 transition-all" 
+            aria-label="Mostrar vestido 3" 
+            role="tab"
+            aria-selected="false"
+          ></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Schema Markup para Hero -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Vestidos de Alta Costura en Pereira | Glam 5.0",
+    "description": "Diseños exclusivos para 15 años, novias y graduaciones en Pereira, Colombia",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://www.glam5pereira.com/images/vestido-novia-pereira.webp",
+      "width": "800",
+      "height": "1200"
+    }
+  }
+  </script>
+
+  <!-- Script mejorado (mover a archivo separado si es posible) -->
+  <script>
+  document.addEventListener('astro:page-load', () => {
+    // Verificar primero si el carrusel existe en esta página
+    const carousel = document.querySelector('.carousel-slides');
+    if (!carousel) return; // Si no existe, salir de la función
+
+    const slides = document.querySelectorAll('.carousel-slide');
+    const prevButton = document.querySelector('.carousel-prev');
+    const nextButton = document.querySelector('.carousel-next');
+    const indicators = document.querySelectorAll('.carousel-indicator');
+    const carouselContainer = document.querySelector('.carousel-container');
+    
+    // Verificar que todos los elementos necesarios existen
+    if (!slides.length || !prevButton || !nextButton || !indicators.length || !carouselContainer) {
+      return; // Si falta algún elemento, salir de la función
+    }
+    
+    let currentIndex = 0;
+    const slideCount = slides.length;
+    
+    // Función para ajustar el contenedor del carrusel al tamaño de la imagen actual
+    function adjustCarouselHeight() {
+      // Permitir que el tamaño se ajuste a la imagen actual
+      const currentImage = slides[currentIndex].querySelector('img');
+      if (!currentImage) return; // Si no hay imagen, salir
+      
+      if (currentImage.complete) {
+        updateSize();
+      } else {
+        currentImage.onload = updateSize;
+      }
+      
+      function updateSize() {
+        // Establecer la altura del contenedor para que coincida con la imagen
+        carouselContainer.style.height = 'auto';
+      }
+    }
+    
+    // Función para mostrar una diapositiva específica
+    function goToSlide(index) {
+      if (index < 0) {
+        currentIndex = slideCount - 1;
+      } else if (index >= slideCount) {
+        currentIndex = 0;
+      } else {
+        currentIndex = index;
+      }
+      
+      carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+      
+      // Actualizar indicadores
+      indicators.forEach((indicator, i) => {
+        if (i === currentIndex) {
+          indicator.classList.add('bg-opacity-100');
+        } else {
+          indicator.classList.remove('bg-opacity-100');
+        }
+      });
+      
+      // Ajustar la altura del carrusel para la imagen actual
+      adjustCarouselHeight();
+    }
+    
+    // Event listeners para los botones
+    prevButton.addEventListener('click', () => {
+      goToSlide(currentIndex - 1);
+    });
+    
+    nextButton.addEventListener('click', () => {
+      goToSlide(currentIndex + 1);
+    });
+    
+    // Event listeners para los indicadores
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener('click', () => {
+        goToSlide(index);
+      });
+    });
+    
+    // Auto rotación cada 5 segundos
+    let interval = setInterval(() => {
+      goToSlide(currentIndex + 1);
+    }, 5000);
+    
+    // Detener la rotación automática al pasar el mouse
+    carouselContainer.addEventListener('mouseenter', () => {
+      clearInterval(interval);
+    });
+    
+    carouselContainer.addEventListener('mouseleave', () => {
+      interval = setInterval(() => {
+        goToSlide(currentIndex + 1);
+      }, 5000);
+    });
+    
+    // También ajustar cuando cambia el tamaño de la ventana
+    window.addEventListener('resize', adjustCarouselHeight);
+    
+    // Inicializar
+    goToSlide(0);
+    
+    // Asegurarse de que todas las imágenes estén cargadas
+    slides.forEach(slide => {
+      const img = slide.querySelector('img');
+      if (img) {
+        img.onload = adjustCarouselHeight;
+        // Si ya está cargada, ajustar de todos modos
+        if (img.complete) {
+          adjustCarouselHeight();
+        }
+      }
+    });
+  });
+</script>
+</section>

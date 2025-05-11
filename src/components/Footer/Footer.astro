@@ -1,0 +1,112 @@
+---
+// src/components/Footer/Footer.astro
+import { Icon } from "astro-icon/components"; // Asegúrate que astro-icon está instalado
+
+// components
+import FooterLink from "./FooterLink.astro"; // Asume que está en la misma carpeta (src/components/Footer/)
+import SiteLogo from "@components/SiteLogo/SiteLogo.astro"; // Ajusta la ruta si es diferente
+
+// data
+import siteData from "@config/siteData.json"; // Para el nombre del sitio y potencialmente otros datos
+
+const today = new Date();
+
+// --- Configuración de Enlaces de Redes Sociales ---
+// ¡IMPORTANTE! Reemplaza estas URLs de ejemplo con las URLs reales de Glam 5.0
+// Si no usas alguna red, comenta la línea o ponle null o '' para que no se muestre el icono.
+const socialLinks = {
+  facebook: "https://www.facebook.com/tu-pagina-glam5", // Reemplaza
+  instagram: "https://www.instagram.com/glam5oficial/",  // Reemplaza
+  // twitter: "https://twitter.com/glam5oficial", // Descomenta y reemplaza si aplica
+  // youtube: null, // Ejemplo: No mostrar YouTube
+  // pinterest: "https://pinterest.com/glam5oficial", // Descomenta y reemplaza si aplica
+  whatsapp: `https://wa.me/573101234567?text=Hola%2C%20quisiera%20más%20información%20sobre%20Glam%205.0` // Reemplaza el número
+};
+// --- Fin Configuración ---
+---
+
+<footer class="bg-base-100/40 mt-12 flex flex-col items-center justify-center py-8">
+    <div class="site-container">
+        <div
+            class="flex w-full flex-col items-center justify-between gap-2 text-lg md:grid md:grid-cols-5"
+        >
+            {/* Logo para móviles */}
+            <div class="flex justify-center py-2 text-center md:hidden">
+                <SiteLogo />
+            </div>
+
+            {/* Links Izquierda - Alineados con navConfig */}
+            <div class="col-span-2 flex flex-wrap justify-center gap-x-4 gap-y-2 md:justify-end">
+                <FooterLink href="/">Inicio</FooterLink>
+                <FooterLink href="/vestidos">Vestidos</FooterLink>
+                {/* Opcional: Puedes añadir más links relevantes aquí */}
+                <FooterLink href="/vestidos/novia">Novia</FooterLink> {/* Ejemplo link directo a categoría */}
+            </div>
+
+            {/* Logo para Desktop */}
+            <div class="hidden justify-center text-center md:flex">
+                <SiteLogo />
+            </div>
+
+             {/* Links Derecha - Alineados con navConfig */}
+            <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 md:col-span-2 md:justify-start">
+                 {/* Ejemplo link a servicio */}
+                <FooterLink href="/alquiler-vestidos">Alquiler</FooterLink>
+                <FooterLink href="/galeria-vestidos">Galería</FooterLink>
+                <FooterLink href="/contacto">Contacto</FooterLink>
+            </div>
+        </div>
+
+        <div class="description mx-auto mt-6 max-w-[25rem] px-4 text-center">
+            <p>
+                <span class="italic">¡Conéctate con nosotros!</span> Síguenos en nuestras redes para ver las últimas colecciones de vestidos, inspiración y novedades de Glam 5.0 en Pereira.
+            </p>
+        </div>
+
+        <div class="text-primary-500 mt-8 flex justify-center gap-4 flex-wrap">
+           {socialLinks.facebook && (
+                <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label={`Facebook de ${siteData.name}`}>
+                    {/* Referencia al icono local: socials/nombre_del_archivo.svg */}
+                    <Icon name="socials/facebook" class="size-6 transition hover:opacity-80" />
+                    <span class="sr-only">Facebook</span>
+                </a>
+           )}
+           {socialLinks.instagram && (
+                <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label={`Instagram de ${siteData.name}`}>
+                    {/* Referencia al icono local */}
+                    <Icon name="socials/instagram" class="size-6 transition hover:opacity-80" />
+                    <span class="sr-only">Instagram</span>
+                </a>
+           )}
+           {/* {socialLinks.twitter && ( // Ejemplo si añades Twitter
+                <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" aria-label={`Twitter de ${siteData.name}`}>
+                    <Icon name="socials/twitter" class="size-6 transition hover:opacity-80" />
+                    <span class="sr-only">Twitter</span>
+                </a>
+           )} */}
+           {/* {socialLinks.pinterest && ( // Ejemplo si añades Pinterest
+                <a href={socialLinks.pinterest} target="_blank" rel="noopener noreferrer" aria-label={`Pinterest de ${siteData.name}`}>
+                    <Icon name="socials/pinterest" class="size-6 transition hover:opacity-80" />
+                    <span class="sr-only">Pinterest</span>
+                </a>
+           )} */}
+           {socialLinks.whatsapp && ( // Enlace a WhatsApp
+                <a href={socialLinks.whatsapp} target="_blank" rel="noopener noreferrer" aria-label={`Contactar a ${siteData.name} por WhatsApp`}>
+                    {/* Referencia al icono local */}
+                    <Icon name="socials/whatsapp" class="size-6 transition hover:opacity-80" />
+                    <span class="sr-only">WhatsApp</span>
+                </a>
+           )}
+        </div>
+
+        <div class="mt-4 mb-2 text-center text-sm opacity-80">
+            © {today.getFullYear()} {siteData.name}. Todos los derechos reservados.
+            {/* Crédito opcional al tema */}
+             | Pagina desarrolada por Estevan Federico Duque Lopez <a
+                href="https://github.com/xFeDEV"
+                class="hover:text-primary-600 transition"
+                target="_blank"
+                rel="noopener">xFeDev</a>
+        </div>
+    </div>
+</footer>

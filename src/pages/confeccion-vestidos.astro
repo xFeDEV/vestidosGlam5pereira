@@ -1,0 +1,21 @@
+---
+// src/pages/contacto.astro
+import BaseLayout from "@layouts/BaseLayout.astro"; // Ajusta la ruta a tu layout
+import ContactSection from "@components/Contact/Contact.astro"; // Tu sección de contacto existente (que usa ContactWhatsApp)
+import CountdownOffer from "@components/Contact/CountdownOffer.astro"; // Nuevo componente que crearemos
+import About from "@components/About/About.astro";
+
+const pageTitle = "Contacta con Glam 5.0 - Pereira";
+const pageDesc = "Agenda tu cita o consulta sobre nuestros vestidos de novia, quinceañera y graduación en Pereira. ¡Oferta especial por tiempo limitado!";
+---
+
+<BaseLayout title={pageTitle} description={pageDesc}>
+  <div class="h-9"></div> {/* Espacio para el encabezado */}
+  <div class="site-container py-12 md:py-16">
+    <About />
+    {/* Nuevo Componente: Gancho con Oferta y Contador */}
+    <CountdownOffer class="mb-12 md:mb-16" />
+    {/* Tu Sección de Contacto Existente */}
+    <ContactSection />
+  </div>
+</BaseLayout>

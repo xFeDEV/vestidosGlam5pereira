@@ -1,0 +1,60 @@
+---
+// src/components/ContactSection.astro (o el nombre que uses)
+/**
+ * * Sección de Contacto para Glam 5.0
+ */
+
+ import { Image } from "astro:assets";
+
+// Importa el componente de contacto por WhatsApp que creamos
+import ContactWhatsApp from "@components/Forms/ContactForm.astro"; // Asegúrate que la ruta sea correcta
+
+// --- Reemplaza esta imagen ---
+// Importa una imagen relevante para Glam 5.0 (ej. boutique, vestido, detalle)
+// Guarda tu imagen en 'src/assets/images/' y actualiza la ruta aquí.
+import imagenContactoGlam from "@assets/images/glam-contacto-placeholder.jpg"; // ¡CAMBIA ESTO!
+import ContactForm from "@components/Forms/ContactForm.astro";
+// --- Fin Reemplazo Imagen ---
+
+interface Props {
+    class?: string;
+}
+
+const { class: className } = Astro.props as Props;
+---
+
+<section
+    id="contact"
+    class="mx-auto max-w-md scroll-mt-10 px-4 py-8 md:max-w-6xl md:py-12"
+    class:list={[className]}
+>
+    {/* Título Adaptado */}
+    <h2 class="h2 md:px-12 lg:text-6xl text-center md:text-left">¡Contáctanos!</h2>
+    <div class="grid gap-y-10 md:grid-cols-2">
+        {/* Columna Izquierda: Texto e Imagen */}
+        <div class="border-primary-300 pt-8 md:border-r md:pr-20 md:pl-12">
+             {/* Texto Adaptado */}
+            <p class="description text-lg">
+                ¿Tienes preguntas, quieres cotizar un diseño a medida o agendar una cita en nuestra boutique en Pereira?
+                ¡Estamos aquí para ayudarte! Completa los siguientes datos y contáctanos directamente por WhatsApp. Te responderemos lo antes posible.
+                ¡Hagamos realidad el vestido de tus sueños!
+            </p>
+            {/* Imagen Adaptada */}
+            <div class="mx-auto mt-8 aspect-square overflow-hidden rounded-md shadow-lg">
+                <Image
+                    src={imagenContactoGlam} // Usa la nueva imagen importada
+                    alt="Contacto Glam 5.0 - Boutique de vestidos en Pereira" // ALT descriptivo
+                    width={450} // Ajusta el tamaño si es necesario
+                    densities={[1.5, 2]}
+                    loading="lazy"
+                    class="h-full w-full object-cover"
+                />
+            </div>
+        </div>
+         {/* Columna Derecha: Formulario WhatsApp */}
+        <div class="md:pr-12 md:pl-20">
+            {/* Usa el componente de WhatsApp */}
+            <ContactForm />
+        </div>
+    </div>
+</section>

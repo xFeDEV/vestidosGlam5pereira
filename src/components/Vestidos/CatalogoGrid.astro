@@ -1,0 +1,22 @@
+---
+// src/components/Vestidos/CatalogoGrid.astro
+import type { CollectionEntry } from "astro:content";
+import CatalogoVestidoCard from "./CatalogoVestidoCard.astro"; // Importa la tarjeta individual
+
+interface Props {
+    vestidos: CollectionEntry<"vestidos">[];
+}
+
+const { vestidos } = Astro.props;
+---
+
+{vestidos && vestidos.length > 0 ? (
+    // Grid responsivo: 1 col móvil, 2 tabletas pequeñas, 4 más grandes
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        {vestidos.map(vestido => (
+            <CatalogoVestidoCard vestido={vestido} />
+        ))}
+    </div>
+) : (
+    <p class="text-center col-span-full">No hay vestidos disponibles en esta categoría por el momento.</p>
+)}

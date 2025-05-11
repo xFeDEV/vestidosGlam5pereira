@@ -1,0 +1,58 @@
+---
+// src/components/Vestidos/CatalogoVestidoCard.astro
+import { type CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+import { humanize } from "@js/textUtils"; // Para mostrar el tipo de forma legible
+
+interface Props {
+    vestido: CollectionEntry<"vestidos">;
+}
+
+const { vestido } = Astro.props;
+const { nombre, tipo, imagenPrincipal } = vestido.data;
+const vestidoUrl = `/vestidos/${tipo}/${vestido.slug}`;
+
+// TODO: Añadir campo 'referencia' al schema si es necesario
+// const referencia = vestido.data.referencia || ''; // Ejemplo si tuvieras referencia
+---
+
+<div class="group relative overflow-hidden rounded-md shadow-md border border-base-200/50 flex flex-col h-full">
+    {/* Enlace que envuelve la imagen */}
+    <a href={vestidoUrl} class="block aspect-[3/4] overflow-hidden"> {/* Ajusta aspect ratio si prefieres */}
+        <Image
+            src={imagenPrincipal}
+            alt={`Vestido ${tipo}: ${nombre}`}
+            width={400}
+            densities={[1, 1.5, 2]}
+            loading="lazy"
+            class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+        />
+    </a>
+
+    {/* Información debajo de la imagen */}
+    <div class="p-4 flex flex-col flex-grow">
+        <h3 class="font-heading-2 text-sm uppercase tracking-wider mb-1 flex-grow">
+            {/* Aquí podrías combinar nombre y referencia si la tuvieras */}
+            {/* {referencia ? `${referencia} | ${nombre}` : nombre} */}
+            {nombre}
+        </h3>
+        <p class="text-xs text-base-600">{humanize(tipo)}</p>
+        {/* Puedes añadir más info como disponibilidad si quieres */}
+        {/* <p class="text-xs text-primary-700 mt-1">
+            {vestido.data.disponibleParaAlquiler ? 'Disponible Alquiler' : ''}
+            {vestido.data.disponibleParaAlquiler && vestido.data.disponibleParaVenta ? ' / ' : ''}
+            {vestido.data.disponibleParaVenta ? 'Disponible Venta' : ''}
+        </p> */}
+    </div>
+
+    {/* --- Espacio para el botón (Paso Futuro) --- */}
+    {/* Aquí añadiremos el botón que aparece al hacer hover */}
+    {/* Por ahora, lo dejamos comentado o vacío */}
+     <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/30">
+         <a href={vestidoUrl} class="button button--primary text-sm py-1 px-3">
+             Ver Detalles
+         </a>
+     </div>
+    {/* --- Fin Espacio Botón --- */}
+
+</div>

@@ -1,0 +1,84 @@
+---
+// src/pages/vestidos/[tipo].astro
+
+// --- Astro Imports ---
+import { getCollection, getEntry } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+
+// --- Layouts ---
+import BaseLayout from '@layouts/BaseLayout.astro'; // Ajusta ruta
+
+// --- Componentes ---
+import CatalogoGrid from '@components/Vestidos/CatalogoGrid.astro'; // Ajusta ruta
+
+// --- Utils ---
+import { humanize } from '@js/textUtils'; // Ajusta ruta
+
+// --- Generación de Rutas Estáticas ---
+export const getStaticPaths = (async () => {
+  const todosLosVestidos = await getCollection('vestidos');
+  const tiposUnicos = [...new Set(todosLosVestidos.map(vestido => vestido.data.tipo))];
+  return tiposUnicos.map(tipoActual => {
+    const vestidosDeEsteTipo = todosLosVestidos.filter(vestido => vestido.data.tipo === tipoActual);
+    return {
+      params: { tipo: tipoActual },
+      props: { vestidos: vestidosDeEsteTipo },
+    };
+  });
+}) satisfies GetStaticPaths;
+// --- FIN Generación de Rutas ---
+
+
+// --- Obtención de Datos para Esta Página Específica ---
+const { tipo } = Astro.params;
+const { vestidos } = Astro.props; // Lista de vestidos para este tipo
+
+const tipoHumanizado = humanize(tipo || '');
+
+// --- Metadatos de la Página (SEO) ---
+const pageTitle = `Catálogo de Vestidos de ${tipoHumanizado} en Pereira | Glam 5.0`;
+const pageDesc = `Explora nuestro catálogo completo de vestidos de ${tipoHumanizado}. Encuentra diseños exclusivos para alquiler y venta en Glam 5.0, Pereira.`;
+
+// --- (Opcional pero RECOMENDADO) Obtener Datos de Introducción de la Categoría ---
+const categoriaInfo = await getEntry('categoriasVestidos', tipo).catch(() => {
+    console.warn(`No se encontró entrada en 'categoriasVestidos' para el tipo: ${tipo}`);
+    return null; // Manejo si no existe el index.md para esta categoría
+});
+---
+
+<BaseLayout title={pageTitle} description={pageDesc}>
+  <div class="h-9"></div> {/* Espacio para el encabezado */}
+
+  {/* --- 1. Título y Descripción de la Página --- */}
+  <section class="site-container py-12 md:py-16">
+
+    {/* --- 1. Título e Introducción de la Categoría --- */}
+    <div class="text-center mb-10 md:mb-14">
+      {/* Usa el título de 'categoriasVestidos' si existe, sino uno genérico */}
+      <h1 class="h1 uppercase mb-3"> {/* Usando H1 aquí para el título principal de la página */}
+        {categoriaInfo?.data.title ?? `Vestidos de ${tipoHumanizado}`}
+      </h1>
+      {/* Usa la descripción de 'categoriasVestidos' si existe */}
+      {categoriaInfo?.data.description && (
+        <p class="description text-lg max-w-3xl mx-auto">
+          {categoriaInfo.data.description}
+        </p>
+      )}
+      {/* Línea divisoria opcional */}
+      <hr class="border-t border-base-300 my-6 max-w-sm mx-auto" />
+      <h2 class="h3 uppercase text-base-700">Nuestros Diseños Disponibles</h2>
+
+    </div>
+
+    {/* --- 2. Cuadrícula del Catálogo de Vestidos --- */}
+    {/* Renderiza la cuadrícula SÓLO si hay vestidos para mostrar */}
+    {vestidos && vestidos.length > 0 ? (
+       <CatalogoGrid vestidos={vestidos} />
+    ) : (
+       <p class="text-center text-lg text-base-600 py-10">
+         Próximamente tendremos nuevos diseños de {tipoHumanizado}. ¡Vuelve pronto!
+       </p>
+    )}
+
+  </section>
+</BaseLayout>
