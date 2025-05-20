@@ -1,6 +1,6 @@
 ---
 // src/pages/vestidos/[tipo].astro
-import { getCollection } from 'astro:content'; // Solo getCollection por ahora
+import { getCollection, getEntry } from 'astro:content'; // <--- REINTRODUCE getEntry
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { humanize } from '@js/textUtils';
@@ -8,58 +8,62 @@ import { humanize } from '@js/textUtils';
 export const prerender = true;
 
 export const getStaticPaths = (async () => {
-  console.log("VERCEL BUILD (simplificado): Iniciando getStaticPaths para [tipo].astro");
+  // ... (tu getStaticPaths con console.logs como estaba)
   const todosLosVestidos = await getCollection('vestidos');
-  console.log(`VERCEL BUILD (simplificado): Total vestidos en 'vestidosCollection': ${todosLosVestidos.length}`);
-  if (todosLosVestidos.length === 0) {
-    console.error("VERCEL BUILD (simplificado): ¡No se encontraron vestidos en la colección 'vestidos'!");
-  } else {
-    console.log("VERCEL BUILD (simplificado): Ejemplo de data.tipo del primer vestido:", todosLosVestidos[0].data.tipo);
-  }
-
   const tiposUnicos = [...new Set(todosLosVestidos.map(vestido => vestido.data.tipo))];
-  console.log("VERCEL BUILD (simplificado): Tipos únicos encontrados:", tiposUnicos);
-
-  if (tiposUnicos.length === 0) {
-    console.error("VERCEL BUILD (simplificado): ¡No se generarán páginas de tipo porque no se encontraron tipos únicos!");
-  }
-
   return tiposUnicos.map(tipoActual => {
     const vestidosDeEsteTipo = todosLosVestidos.filter(vestido => vestido.data.tipo === tipoActual);
-    console.log(`VERCEL BUILD (simplificado): Para tipo '${tipoActual}', se pasarán ${vestidosDeEsteTipo.length} vestidos.`);
     return {
       params: { tipo: tipoActual },
-      props: { vestidos: vestidosDeEsteTipo, tipoActual: tipoActual },
+      props: { vestidos: vestidosDeEsteTipo, tipoActual: tipoActual }, // Pasamos tipoActual para simplificar
     };
   });
 }) satisfies GetStaticPaths;
 
 const { tipo } = Astro.params;
-const { vestidos, tipoActual } = Astro.props; // Recibimos tipoActual también
+const { vestidos, tipoActual } = Astro.props; // tipoActual desde props
 
 const tipoHumanizado = humanize(tipo || '');
-const pageTitle = `Prueba Catálogo: ${tipoHumanizado}`;
-const pageDesc = `Página de prueba para vestidos de ${tipoHumanizado}.`;
 
-console.log(`VERCEL RENDER (simplificado): Página para tipo: ${tipo}`);
-console.log(`VERCEL RENDER (simplificado): Número de vestidos recibidos: ${vestidos ? vestidos.length : 'ERROR o NINGUNO'}`);
-if (vestidos && vestidos.length > 0) {
-    console.log("VERCEL RENDER (simplificado): Nombres de vestidos:", vestidos.map(v => v.data.nombre).join(", "));
+// --- REINTRODUCIR DATOS DE INTRODUCCIÓN DE LA CATEGORÍA ---
+const categoriaInfo = await getEntry('categoriasVestidos', tipoActual).catch(() => { // Usamos tipoActual de props
+    console.warn(`VERCEL: No se encontró entrada en 'categoriasVestidos' para el tipo: ${tipoActual}`);
+    return null;
+});
+// --- FIN REINTRODUCCIÓN ---
+
+const pageTitle = categoriaInfo?.data.title ?? `Catálogo de Vestidos de ${tipoHumanizado}`;
+const pageDesc = categoriaInfo?.data.description ?? `Explora nuestro catálogo de vestidos de ${tipoHumanizado}.`;
+
+// Más logs para Vercel
+console.log(`VERCEL RENDER (${tipoActual}): categoriaInfo existe: ${!!categoriaInfo}`);
+if (categoriaInfo) {
+    console.log(`VERCEL RENDER (${tipoActual}): categoriaInfo.data.title: ${categoriaInfo.data.title}`);
 }
+console.log(`VERCEL RENDER (${tipoActual}): Número de vestidos: ${vestidos ? vestidos.length : 0}`);
 ---
 
 <BaseLayout title={pageTitle} description={pageDesc}>
+  <div class="h-9"></div> {/* Espacio */}
+
   <section class="site-container py-12 md:py-16">
     <div class="text-center mb-10 md:mb-14">
-      <h1 class="h1 uppercase mb-3">Catálogo de Vestidos de {tipoHumanizado}</h1>
-      <p>Tipo de la URL: {tipo}</p>
-      <p>Tipo desde props: {tipoActual}</p>
-      <p>Número de vestidos para este tipo: {vestidos ? vestidos.length : "0"}</p>
+      {/* --- REINTRODUCIR TÍTULO Y DESCRIPCIÓN DE CATEGORÍA --- */}
+      <h1 class="h1 uppercase mb-3">
+        {categoriaInfo?.data.title ?? `Vestidos de ${tipoHumanizado}`}
+      </h1>
+      {categoriaInfo?.data.description && (
+        <p class="description text-lg max-w-3xl mx-auto">
+          {categoriaInfo.data.description}
+        </p>
+      )}
+      <hr class="border-t border-base-300 my-6 max-w-sm mx-auto" />
+      <h2 class="h3 uppercase text-base-700">Nuestros Diseños Disponibles (Lista Simplificada)</h2>
+      {/* --- FIN REINTRODUCCIÓN --- */}
     </div>
 
     {vestidos && vestidos.length > 0 ? (
       <div>
-        <h2 class="h3 uppercase text-base-700 text-center mb-6">Lista de Vestidos (Nombres):</h2>
         <ul class="list-disc list-inside text-center">
           {vestidos.map(vestido => (
             <li>{vestido.data.nombre} (Tipo en MD: {vestido.data.tipo})</li>
@@ -68,8 +72,7 @@ if (vestidos && vestidos.length > 0) {
       </div>
     ) : (
       <p class="text-center text-lg text-base-600 py-10">
-        No se encontraron vestidos para la categoría "{tipoHumanizado}" en Vercel o 'vestidos' prop está vacío.
-        Revisa los logs de construcción de Vercel para los console.log de 'getStaticPaths'.
+        Próximamente tendremos nuevos diseños de {tipoHumanizado}. ¡Vuelve pronto!
       </p>
     )}
   </section>
