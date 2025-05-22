@@ -1,55 +1,51 @@
 ---
 // src/pages/vestidos/[tipo].astro
-import { getCollection, getEntry } from 'astro:content'; // <--- REINTRODUCE getEntry
+import { getCollection, getEntry } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { humanize } from '@js/textUtils';
+import CatalogoGrid from '@components/Vestidos/CatalogoGrid.astro';
 
 export const prerender = true;
 
 export const getStaticPaths = (async () => {
-  // ... (tu getStaticPaths con console.logs como estaba)
   const todosLosVestidos = await getCollection('vestidos');
   const tiposUnicos = [...new Set(todosLosVestidos.map(vestido => vestido.data.tipo))];
   return tiposUnicos.map(tipoActual => {
     const vestidosDeEsteTipo = todosLosVestidos.filter(vestido => vestido.data.tipo === tipoActual);
     return {
-      params: { tipo: tipoActual },
-      props: { vestidos: vestidosDeEsteTipo, tipoActual: tipoActual }, // Pasamos tipoActual para simplificar
+      params: { tipo: tipoActual }, // Usamos el 'tipo' real para el parámetro de la ruta
+      props: { vestidos: vestidosDeEsteTipo, tipoDeVestidoProp: tipoActual }, // Pasamos el tipo como prop
     };
   });
 }) satisfies GetStaticPaths;
 
-const { tipo } = Astro.params;
-const { vestidos, tipoActual } = Astro.props; // tipoActual desde props
+// Props de la página
+const { tipo } = Astro.params; // Este es el 'tipo' de la URL (ej. "novia")
+const { vestidos, tipoDeVestidoProp } = Astro.props; // 'vestidos' es la lista, 'tipoDeVestidoProp' es el tipo exacto del frontmatter
 
-const tipoHumanizado = humanize(tipo || '');
+// Determinar el tipo humanizado de forma segura
+// Usamos tipoDeVestidoProp que viene de getStaticPaths y es más fiable que Astro.params.tipo aquí
+const tipoHumanizado = humanize(tipoDeVestidoProp || '');
 
-// --- REINTRODUCIR DATOS DE INTRODUCCIÓN DE LA CATEGORÍA ---
-const categoriaInfo = await getEntry('categoriasVestidos', tipoActual).catch(() => { // Usamos tipoActual de props
-    console.warn(`VERCEL: No se encontró entrada en 'categoriasVestidos' para el tipo: ${tipoActual}`);
+// Obtener información de la categoría usando el tipo de la prop
+const categoriaInfo = await getEntry('categoriasVestidos', tipoDeVestidoProp).catch(() => {
+    console.warn(`WARN: No se encontró entrada en 'categoriasVestidos' para el tipo: ${tipoDeVestidoProp}`);
     return null;
 });
-// --- FIN REINTRODUCCIÓN ---
 
+// Metadatos de la página
 const pageTitle = categoriaInfo?.data.title ?? `Catálogo de Vestidos de ${tipoHumanizado}`;
-const pageDesc = categoriaInfo?.data.description ?? `Explora nuestro catálogo de vestidos de ${tipoHumanizado}.`;
-
-// Más logs para Vercel
-console.log(`VERCEL RENDER (${tipoActual}): categoriaInfo existe: ${!!categoriaInfo}`);
-if (categoriaInfo) {
-    console.log(`VERCEL RENDER (${tipoActual}): categoriaInfo.data.title: ${categoriaInfo.data.title}`);
-}
-console.log(`VERCEL RENDER (${tipoActual}): Número de vestidos: ${vestidos ? vestidos.length : 0}`);
+const pageDesc = categoriaInfo?.data.description ?? `Explora nuestro catálogo completo de vestidos de ${tipoHumanizado}.`;
 ---
 
 <BaseLayout title={pageTitle} description={pageDesc}>
-  <div class="h-9"></div> {/* Espacio */}
+  <div class="h-9"></div> {/* Espacio para el encabezado */}
 
   <section class="site-container py-12 md:py-16">
     <div class="text-center mb-10 md:mb-14">
-      {/* --- REINTRODUCIR TÍTULO Y DESCRIPCIÓN DE CATEGORÍA --- */}
       <h1 class="h1 uppercase mb-3">
+        {/* Aquí usamos directamente las variables definidas arriba, la sintaxis es correcta */}
         {categoriaInfo?.data.title ?? `Vestidos de ${tipoHumanizado}`}
       </h1>
       {categoriaInfo?.data.description && (
@@ -58,18 +54,11 @@ console.log(`VERCEL RENDER (${tipoActual}): Número de vestidos: ${vestidos ? ve
         </p>
       )}
       <hr class="border-t border-base-300 my-6 max-w-sm mx-auto" />
-      <h2 class="h3 uppercase text-base-700">Nuestros Diseños Disponibles (Lista Simplificada)</h2>
-      {/* --- FIN REINTRODUCCIÓN --- */}
+      <h2 class="h3 uppercase text-base-700">Nuestros Diseños Disponibles</h2>
     </div>
 
     {vestidos && vestidos.length > 0 ? (
-      <div>
-        <ul class="list-disc list-inside text-center">
-          {vestidos.map(vestido => (
-            <li>{vestido.data.nombre} (Tipo en MD: {vestido.data.tipo})</li>
-          ))}
-        </ul>
-      </div>
+        <CatalogoGrid vestidos={vestidos} />
     ) : (
       <p class="text-center text-lg text-base-600 py-10">
         Próximamente tendremos nuevos diseños de {tipoHumanizado}. ¡Vuelve pronto!
