@@ -9,7 +9,7 @@ import AutoImport from "astro-auto-import";
 
 // https://astro.build/config
 export default defineConfig({
-	site: "https://astro.build",
+	site: "https://www.glamvestidospereira.com",
 	output: "server", // <-- Agrega esta línea
     adapter: vercel({
         analytics: true,
