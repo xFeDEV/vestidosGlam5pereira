@@ -32,14 +32,14 @@ const pageDescription = "Diseños exclusivos para 15 años, novias y graduacione
       </div>
       
       <!-- Carrusel (SEO Optimizado) -->
-      <div class="carousel-container relative my-auto w-full overflow-hidden rounded-lg shadow-lg" aria-label="Galería de vestidos Glam 5.0">
-        <div class="carousel-slides flex transition-transform duration-500 ease-in-out" role="list">
+      <div class="carousel-container relative my-auto w-full overflow-hidden rounded-lg shadow-lg h-[600px] md:h-[700px]" aria-label="Galería de vestidos Glam 5.0">
+        <div class="carousel-slides flex h-full transition-transform duration-500 ease-in-out" role="list">
           <!-- Slide 1 (Prioritaria) -->
-          <div class="carousel-slide min-w-full" role="listitem">
+          <div class="carousel-slide min-w-full h-full flex items-center justify-center" role="listitem">
             <img 
               src="/images/vestido-novia-pereira.jpg" 
               alt="Vestido de novia con encaje - Glam 5.0 Pereira" 
-              class="w-full h-auto object-contain"
+              class="w-full h-full object-cover"
               loading="eager"
               fetchpriority="high"
               width="800"
@@ -47,22 +47,22 @@ const pageDescription = "Diseños exclusivos para 15 años, novias y graduacione
             />
           </div>
           <!-- Slide 2 -->
-          <div class="carousel-slide min-w-full" role="listitem">
+          <div class="carousel-slide min-w-full h-full flex items-center justify-center" role="listitem">
             <img 
               src="/images/vestido-15-anos.jpg" 
               alt="Vestido para quinceañera en tonos pastel - Pereira" 
-              class="w-full h-auto object-contain"
+              class="w-full h-full object-cover"
               loading="lazy"
               width="800"
               height="1200"
             />
           </div>
           <!-- Slide 3 -->
-          <div class="carousel-slide min-w-full" role="listitem">
+          <div class="carousel-slide min-w-full h-full flex items-center justify-center" role="listitem">
             <img 
               src="/images/vestido-graduacion.jpg" 
               alt="Vestido elegante para graduación - Glam 5.0" 
-              class="w-full h-auto object-contain"
+              class="w-full h-full object-cover"
               loading="lazy"
               width="800"
               height="1200"
@@ -150,24 +150,6 @@ const pageDescription = "Diseños exclusivos para 15 años, novias y graduacione
     let currentIndex = 0;
     const slideCount = slides.length;
     
-    // Función para ajustar el contenedor del carrusel al tamaño de la imagen actual
-    function adjustCarouselHeight() {
-      // Permitir que el tamaño se ajuste a la imagen actual
-      const currentImage = slides[currentIndex].querySelector('img');
-      if (!currentImage) return; // Si no hay imagen, salir
-      
-      if (currentImage.complete) {
-        updateSize();
-      } else {
-        currentImage.onload = updateSize;
-      }
-      
-      function updateSize() {
-        // Establecer la altura del contenedor para que coincida con la imagen
-        carouselContainer.style.height = 'auto';
-      }
-    }
-    
     // Función para mostrar una diapositiva específica
     function goToSlide(index) {
       if (index < 0) {
@@ -184,13 +166,12 @@ const pageDescription = "Diseños exclusivos para 15 años, novias y graduacione
       indicators.forEach((indicator, i) => {
         if (i === currentIndex) {
           indicator.classList.add('bg-opacity-100');
+          indicator.setAttribute('aria-selected', 'true');
         } else {
           indicator.classList.remove('bg-opacity-100');
+          indicator.setAttribute('aria-selected', 'false');
         }
       });
-      
-      // Ajustar la altura del carrusel para la imagen actual
-      adjustCarouselHeight();
     }
     
     // Event listeners para los botones
@@ -225,23 +206,8 @@ const pageDescription = "Diseños exclusivos para 15 años, novias y graduacione
       }, 5000);
     });
     
-    // También ajustar cuando cambia el tamaño de la ventana
-    window.addEventListener('resize', adjustCarouselHeight);
-    
     // Inicializar
     goToSlide(0);
-    
-    // Asegurarse de que todas las imágenes estén cargadas
-    slides.forEach(slide => {
-      const img = slide.querySelector('img');
-      if (img) {
-        img.onload = adjustCarouselHeight;
-        // Si ya está cargada, ajustar de todos modos
-        if (img.complete) {
-          adjustCarouselHeight();
-        }
-      }
-    });
   });
 </script>
 </section>

@@ -1,12 +1,10 @@
-@import url("./fonts.css");
-
+/* All @import statements must come first, before any other CSS rules */
+@import "./fonts.css";
 @import "tailwindcss";
+@import "./tailwind-theme.css";
 
 /* tailwind plugins */
 @plugin "@tailwindcss/forms";
-
-/* theme definition import */
-@import "./tailwind-theme.css";
 
 /* other imports into specific layers */
 @import "./markdown-content.css" layer(components);
