@@ -1,0 +1,143 @@
+---
+// src/components/Location/Location.astro
+/**
+ * Componente de Ubicación para Glam 5.0
+ * Incluye mapa de Google Maps con estilo elegante y datos de contacto
+ */
+
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// Datos de la tienda
+const NOMBRE_TIENDA = "Glam 5.0";
+const DIRECCION = "Cra. 6 #16-81, Centro, Pereira, Risaralda";
+const TELEFONO = "+57 305 907 4783";
+const WHATSAPP = "573059074783";
+const HORARIO = {
+  semana: "Lunes a Viernes: 10:00 AM - 7:00 PM",
+  sabado: "Sábados: 10:00 AM - 5:00 PM",
+  domingo: "Domingos: Cita previa"
+};
+
+const GOOGLE_MAPS_URL = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.5!2d-75.69397485843575!3d4.815482505468092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3887e2049c4c25%3A0x3ee92f2156b180f7!2sGlam%205.0%20%7C%20Alquiler%20de%20Vestidos%20Pereira!5e0!3m2!1ses-419!2sco!4v1764083396678!5m2!1ses-419!2sco";
+const GOOGLE_MAPS_LINK = "https://maps.app.goo.gl/AGYFhHonAUycnV1K8"; // Puedes actualizar este link
+---
+
+<section
+  id="ubicacion"
+  class:list={["py-16 md:py-24 bg-white dark:bg-black", className]}
+>
+  <div class="site-container">
+    <!-- Encabezado -->
+    <div class="text-center mb-12">
+      <h2 class="h2 text-black dark:text-white mb-4">Visítanos</h2>
+      <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+        Te esperamos en nuestra boutique para ayudarte a encontrar el vestido perfecto para tu ocasión especial.
+      </p>
+    </div>
+
+    <!-- Contenedor Principal -->
+    <div class="grid md:grid-cols-2 gap-8 lg:gap-12 items-stretch">
+      
+      <!-- Información de Contacto -->
+      <div class="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl p-8 md:p-10 flex flex-col justify-between">
+        <div>
+          <h3 class="font-serif text-2xl md:text-3xl font-semibold text-black dark:text-white mb-6">
+            {NOMBRE_TIENDA}
+          </h3>
+          
+          <!-- Dirección -->
+          <div class="flex items-start gap-4 mb-6">
+            <div class="flex-shrink-0 w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+              <span class="text-2xl">📍</span>
+            </div>
+            <div>
+              <h4 class="font-medium text-gray-900 dark:text-white mb-1">Dirección</h4>
+              <p class="text-gray-600 dark:text-gray-400">{DIRECCION}</p>
+            </div>
+          </div>
+
+          <!-- Teléfono -->
+          <div class="flex items-start gap-4 mb-6">
+            <div class="flex-shrink-0 w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+              <span class="text-2xl">📞</span>
+            </div>
+            <div>
+              <h4 class="font-medium text-gray-900 dark:text-white mb-1">Teléfono</h4>
+              <a 
+                href={`tel:${TELEFONO.replace(/\s/g, '')}`}
+                class="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+              >
+                {TELEFONO}
+              </a>
+            </div>
+          </div>
+
+          <!-- Horarios -->
+          <div class="flex items-start gap-4 mb-8">
+            <div class="flex-shrink-0 w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+              <span class="text-2xl">🕐</span>
+            </div>
+            <div>
+              <h4 class="font-medium text-gray-900 dark:text-white mb-2">Horarios</h4>
+              <ul class="text-gray-600 dark:text-gray-400 space-y-1 text-sm">
+                <li>{HORARIO.semana}</li>
+                <li>{HORARIO.sabado}</li>
+                <li class="text-gray-900 dark:text-white font-medium">{HORARIO.domingo}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <a
+            href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hola Glam 5.0, quiero agendar una cita en su boutique.')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-black hover:bg-gray-800 text-white rounded-full font-medium transition-all shadow-lg"
+          >
+            <Icon name="socials/whatsapp" class="size-5" />
+            <span>Agendar Cita</span>
+          </a>
+          <a
+            href="https://maps.app.goo.gl/AGYFhHonAUycnV1K8"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 rounded-full font-medium transition-all shadow-lg"
+          >
+            <span>🗺️</span>
+            <span>Cómo Llegar</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Mapa -->
+      <div class="relative rounded-2xl overflow-hidden shadow-xl h-[400px] md:h-full min-h-[400px]">
+        <iframe
+          class="mapa-elegante w-full h-full"
+          src={GOOGLE_MAPS_URL}
+          style="border:0;"
+          allowfullscreen=""
+          loading="lazy"
+          
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Ubicación de Glam 5.0 en Google Maps"
+        ></iframe>
+        
+        <!-- Overlay decorativo en esquinas -->
+        <div class="absolute inset-0 pointer-events-none border-4 border-white/20 dark:border-gray-800/20 rounded-2xl"></div>
+      </div>
+    </div>
+
+    <!-- Nota adicional -->
+    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-8">
+      ✨ Recomendamos agendar tu cita con anticipación para brindarte una atención personalizada.
+    </p>
+  </div>
+</section>
